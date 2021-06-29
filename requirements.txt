@@ -1,4 +1,3 @@
-en-core-med7-lg @ https://med7.s3.eu-west-2.amazonaws.com/en_core_med7_lg.tar.gz
 Flask==2.0.1
 gunicorn==20.1.0
 Pillow==8.2.0
