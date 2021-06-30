@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route("/", methods=["POST"])
+@app.route("/img", methods=["POST"])
 def process_image():
     file = request.files['image']
 
