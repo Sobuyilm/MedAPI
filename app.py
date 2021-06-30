@@ -21,7 +21,9 @@ def process_image():
         midresponse = requests.get("https://www.drugs.com/" + i)
         if midresponse.ok:
             Medizin = str(i)
-       
+        #else:
+         #   return jsonify({'str': "ne"})
+
     #Dosage&Administration
             response = requests.get("https://api.fda.gov/drug/label.json?search=dosage_and_administration:" + Medizin)
 
@@ -29,7 +31,8 @@ def process_image():
     for data in (response.json()["results"]):
         DosageAndAdministration = data["dosage_and_administration"]
     return jsonify({'str': DosageAndAdministration})
-        
+        #else:
+          #  return jsonify({'str': "No Drug detected"})
 
 if __name__ == "__main__":
     app.run(debug=True)
