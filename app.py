@@ -1,4 +1,5 @@
 #Import stuff
+from flask import Flask
 import pytesseract as tess
 from PIL import Image
 import requests
@@ -19,16 +20,16 @@ def process_image():
     for i in text.split():
         midresponse = requests.get("https://www.drugs.com/" + i)
         if midresponse.ok:
-            Medizin = i
-
+            Medizin = str(i)
+       
     #Dosage&Administration
-    response = requests.get("https://api.fda.gov/drug/label.json?search=dosage_and_administration:" + Medizin)
+            response = requests.get("https://api.fda.gov/drug/label.json?search=dosage_and_administration:" + Medizin)
 
     #Only show relevant information
     for data in (response.json()["results"]):
         DosageAndAdministration = data["dosage_and_administration"]
     return jsonify({'str': DosageAndAdministration})
-
+        
 
 if __name__ == "__main__":
     app.run(debug=True)
