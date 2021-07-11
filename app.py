@@ -1,39 +1,30 @@
-#Import stuff
-from flask import Flask
-import pytesseract as tess
-from PIL import Image
-import requests
 from flask import Flask, request, jsonify
-tess.pytesseract.tesseract_cmd = './.apt/usr/bin/tesseract'
-
+from PIL import Image
+import pytesseract
+pytesseract.pytesseract.tesseract_cmd = './.apt/usr/bin/tesseract'
 
 app = Flask(__name__)
+text = "b"
+@app.route("/imgt", methods=["POST", "GET"])
 
-@app.route("/img", methods=["POST"])
+
 def process_image():
-    file = request.files['image']
+    global text
+    if request.method == 'POST':
+        file = request.files['image']
+        img = Image.open(file.stream)
+        text = pytesseract.image_to_string(img, lang='eng')
+ 
+        return jsonify(text)
 
-    #Read the image via file.stream
-    img = Image.open(file.stream)
-    text = tess.image_to_string(img)
+@app.route('/')
+def index():
+    global text
+    return text
+    
+    
+    
 
-    #Break down text into array & Extract drug from array
-    for i in text.split():
-        midresponse = requests.get("https://www.drugs.com/" + i)
-        if midresponse.ok:
-            Medizin = str(i)
-        #else:
-         #   return jsonify({'str': "ne"})
-
-    #Dosage&Administration
-            response = requests.get("https://api.fda.gov/drug/label.json?search=dosage_and_administration:" + Medizin)
-
-    #Only show relevant information
-    for data in (response.json()["results"]):
-        DosageAndAdministration = data["dosage_and_administration"]
-    return jsonify({'str': DosageAndAdministration})
-        #else:
-          #  return jsonify({'str': "No Drug detected"})
 
 if __name__ == "__main__":
     app.run(debug=True)
